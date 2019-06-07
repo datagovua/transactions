@@ -1,0 +1,13 @@
+version: '3.1'
+services:
+  embulk:
+    build: ./docker
+    volumes:
+      - .:/src
+    working_dir: /src
+    depends_on:
+      - pg
+  pg:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: data

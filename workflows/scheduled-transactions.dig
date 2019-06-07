@@ -1,0 +1,24 @@
+timezone: UTC
+schedule:
+  daily>: 17:09:00
+
+_export:
+  pg:
+    host: pg
+    port: 5432
+    database: transactions
+    user: postgres
+    password: "data"
+    ssl: false
+
++select_missing_dates:
+  pg>: select_missing_dates.sql
+  store_last_results: all
+
++fetch_transactions:
+  for_each>:
+    dates: ${pg.last_results}
+  _do:
+#    sh>: echo ${dates.date}
+    sh>: ./fetch_bulk_transactions.sh ${dates.date}
+  _parallel: false

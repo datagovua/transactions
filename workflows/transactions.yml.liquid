@@ -1,0 +1,80 @@
+in:
+  type: http
+  url: http://api.spending.gov.ua/api/v2/api/transactions/
+  params:
+    - {name: source, value: DKSU}
+    - {name: startdate, value: {{ env.date }} }
+    - {name: enddate, value: {{ env.date }} }
+  method: get
+  read_timeout: 60000
+  request_headers:
+    accept: 'application/octet-stream'
+  max_retries: 2
+  decoders:
+  - type: commons-compress
+    format: zip
+    match_name: transactions.csv
+  parser:
+    charset: cp1251
+    newline: CRLF
+    type: csv
+    delimiter: ';'
+    quote: '"'
+    escape: ''
+    skip_header_lines: 2
+    columns:
+     - {name: id, type: long}
+     - {name: doc_vob, type: long}
+     - {name: doc_vob_name, type: string}
+     - {name: doc_vob_number, type: string}
+     - {name: doc_date, type: timestamp, format: '%Y-%m-%d' }
+     - {name: doc_v_date, type: timestamp, format: '%Y-%m-%d'}
+     - {name: trans_date, type: timestamp, format: '%Y-%m-%d'}
+     - {name: amount, type: double}
+     - {name: amount_cop, type: long}
+     - {name: currency, type: string}
+     - {name: payer_edrpou, type: string}
+     - {name: payer_name, type: string}
+     - {name: payer_account, type: string}
+     - {name: payer_mfo, type: string}
+     - {name: payer_bank, type: string}
+     - {name: recipt_edrpou, type: string}
+     - {name: recipt_name, type: string}
+     - {name: recipt_account, type: string}
+     - {name: recipt_bank, type: string}
+     - {name: recipt_mfo, type: string}
+     - {name: payment_details, type: string}
+     - {name: doc_add_attr, type: string}
+     - {name: region_id, type: long}
+     - {name: payment_type, type: string}
+     - {name: payment_data, type: string}
+     - {name: source_id, type: long}
+     - {name: source_name, type: string}
+
+out:
+  type: postgresql
+  host: pg
+  user: postgres
+  password: "data"
+  database: transactions
+  table: transactions
+  mode: insert
+  
+#  type: file
+#  path_prefix: ./output/
+#  file_ext: csv
+#  formatter:
+#    type: csv
+#    delimiter: ","
+#    newline: CRLF
+#    newline_in_field: LF
+#    charset: UTF-8
+#    quote_policy: MINIMAL
+#    quote: '"'
+#    escape: ""
+#    null_string: ""
+#    default_timezone: 'UTC'
+#    column_options:
+#      doc_date: { format: '%Y-%m-%d' }
+#      doc_v_date: { format: '%Y-%m-%d' }
+#      trans_date: { format: '%Y-%m-%d' }
