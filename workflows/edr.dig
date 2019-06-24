@@ -1,0 +1,16 @@
+timezone: UTC
+schedule:
+  daily>: 17:59:00
+
+_export:
+  pg:
+    host: pg
+    port: 5432
+    database: transactions
+    user: postgres
+    password: "data"
+    ssl: false
+
++fetch_transactions:
+  sh>: for file in `ls -1 ../edr-data/`; do export date="`./get_date.sh ../edr-data/$file '15.1-EX_XML_EDR_UO.xml'`"; echo $date; ./load_edr.sh ../edr-data/$file; done
+

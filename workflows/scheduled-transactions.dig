@@ -1,6 +1,6 @@
 timezone: UTC
 schedule:
-  daily>: 17:09:00
+  daily>: 17:59:00
 
 _export:
   pg:
@@ -19,6 +19,6 @@ _export:
   for_each>:
     dates: ${pg.last_results}
   _do:
-#    sh>: echo ${dates.date}
     sh>: ./fetch_bulk_transactions.sh ${dates.date}
   _parallel: false
+

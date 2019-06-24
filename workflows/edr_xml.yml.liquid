@@ -1,0 +1,48 @@
+in:
+  type: file
+  path_prefix: {{ env.filename }}
+  decoders:
+  - type: commons-compress
+    format: zip
+    match_name: 15.1-EX_XML-EDR_UO.xml
+  parser:
+    type: xml
+    root: DATA/RECORD
+    schema:
+      - {name: NAME, type: string}
+      - {name: SHORT_NAME, type: string}
+      - {name: EDRPOU, type: string}
+      - {name: ADDRESS, type: string}
+      - {name: BOSS, type: string}
+      - {name: KVED, type: string}
+      - {name: STAN, type: string}
+      - {path: FOUNDERS/FOUNDER, type: json, name: founders}
+
+filters:
+  - type: column
+    add_columns:
+      - {name: d, type: timestamp, default: "{{env.date}}", format: " %Y-%m-%d %H:%M"}
+      - {src: NAME, name: full_name}
+      - {src: SHORT_NAME, name: short_name}
+      - {src: EDRPOU, name: edrpou}
+      - {src: ADDRESS, name: address}
+      - {src: BOSS, name: director}
+      - {src: KVED, name: kved}
+      - {src: STAN, name: status}
+    drop_columns:
+      - { name: NAME }
+      - {name: SHORT_NAME}
+      - {name: EDRPOU}
+      - {name: ADDRESS}
+      - {name: BOSS}
+      - {name: KVED}
+      - {name: STAN}
+
+out:
+  type: postgresql
+  host: pg
+  user: postgres
+  password: "data"
+  database: edr
+  table: edr_full
+  mode: insert

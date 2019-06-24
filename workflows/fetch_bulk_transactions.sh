@@ -1,6 +1,7 @@
 set -e
 cd $(dirname $0)
 
+
 if [ $# -eq 0 ]
   then
     echo "No arguments supplied using yesterday date"

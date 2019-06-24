@@ -2,7 +2,6 @@ in:
   type: http
   url: http://api.spending.gov.ua/api/v2/api/transactions/
   params:
-    - {name: source, value: DKSU}
     - {name: startdate, value: {{ env.date }} }
     - {name: enddate, value: {{ env.date }} }
   method: get
